@@ -9,15 +9,31 @@
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
+    id 'eclipse'
+    id 'io.freefair.lombok' version '3.6.4'
+    id 'org.springframework.boot' version '2.1.7.RELEASE'
+    id "com.palantir.docker" version '0.22.1'
+}
 
-    // Apply the application plugin to add support for building a CLI application
-    id 'application'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'io.freefair.lombok'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.palantir.docker'
+
+ext {
+    group = 'com.nzsoft.server'
+    relVersion = '1.0.0-SNAPSHOT'
+    dockeruser = 'spworks7'
+    dockerrepo = 'nzsoft-server'
 }
 
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -29,11 +45,35 @@ dependencies {
 
     // Use JUnit Jupiter Engine for testing.
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+
+	compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+	compile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+	compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
+	compile group: 'org.springframework', name: 'spring-web', version: '5.1.9.RELEASE'
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 }
 
-application {
-    // Define the main class for the application
-    mainClassName = 'com.nzsoft.server.App'
+bootJar {
+    baseName = 'nzsoft-server'
+    version = "${relVersion}"
+}
+
+task unpack(type: Copy) {
+    dependsOn bootJar
+    from(zipTree(tasks.bootJar.outputs.files.singleFile))
+    into("build/dependency")
+}
+
+docker {
+    name "${dockeruser}/${dockerrepo}"
+    copySpec.from(tasks.unpack.outputs).into("dependency")
+    buildArgs(['DEPENDENCY': "dependency"])
 }
 
 test {
