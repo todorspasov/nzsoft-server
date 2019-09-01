@@ -4,12 +4,14 @@ import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nzsoft.server.model.ModeFilter;
 import com.nzsoft.server.model.ServiceData;
 import com.nzsoft.server.service.DataService;
 
@@ -29,9 +31,15 @@ public class DataController {
 
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public ServiceData getData(@RequestParam(required = false) String filter) {
-		log.info("Received get data request with filter: {}", filter);
-		return dataService.getData(filter);
+	public ServiceData getData(@RequestParam(required = false) String teamId) {
+		log.info("Received get data request by team: {}", teamId);
+		return dataService.getData(teamId);
 	}
 
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void changeMode(@RequestBody(required = true) ModeFilter mode) {
+		log.info("Received change mode request with filter: {}", mode);
+		dataService.changeMode(mode);
+	}
 }

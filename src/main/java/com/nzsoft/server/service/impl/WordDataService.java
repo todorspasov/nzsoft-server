@@ -6,6 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.nzsoft.server.model.ModeFilter;
 import com.nzsoft.server.model.ServiceData;
 import com.nzsoft.server.service.DataService;
 
@@ -26,10 +27,14 @@ public class WordDataService implements DataService {
 	
 	private OperationMode operationMode;
 	
+	public WordDataService() {
+		this.operationMode = OperationMode.RANDOM_WORD;
+	}
+	
 	@Override
-	public ServiceData getData(String filter) {
-		applyFilter(filter);
-		return ServiceData.builder().id(UUID.randomUUID().toString()).data(getFilteredData()).build();
+	public ServiceData getData(String outTeamId) {
+		String teamId = outTeamId == null ? "" : outTeamId;
+		return ServiceData.builder().id(UUID.randomUUID().toString().concat(teamId)).data(getFilteredData()).build();
 	}
 
 	private String getFilteredData() {
@@ -46,13 +51,14 @@ public class WordDataService implements DataService {
 		return "";
 	}
 
-	private void applyFilter(String filter) {
-		if (StringUtils.isNotEmpty(filter)) {
+	@Override
+	public void changeMode(ModeFilter mode) {
+		if (mode != null && StringUtils.isNotBlank(mode.getMode())) {
 			if (operationMode == OperationMode.BLACK_HAT) {
 				//only another black hat can kill this black hat
-				operationMode = BLACK_HAT_FILTER.equals(filter) ? OperationMode.PREDEFINED_WORD : operationMode;
+				operationMode = BLACK_HAT_FILTER.equals(mode.getMode()) ? OperationMode.PREDEFINED_WORD : operationMode;
 			} else {
-				operationMode = BLACK_HAT_FILTER.equals(filter) ? OperationMode.BLACK_HAT : (RANDOM_WORD_FILTER.equals(filter) ? OperationMode.RANDOM_WORD : OperationMode.PREDEFINED_WORD);
+				operationMode = BLACK_HAT_FILTER.equals(mode.getMode()) ? OperationMode.BLACK_HAT : (RANDOM_WORD_FILTER.equals(mode.getMode()) ? OperationMode.RANDOM_WORD : OperationMode.PREDEFINED_WORD);
 			}
 		}
 	}
