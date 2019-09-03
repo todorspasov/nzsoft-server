@@ -62,13 +62,21 @@ public class WordDataService implements DataService {
 	public void changeMode(ModeFilter mode) {
 		if (mode != null && StringUtils.isNotBlank(mode.getMode())) {
 			if (operationMode == OperationMode.BLACK_HAT) {
-				//only another black hat can kill this black hat
-				operationMode = BLACK_HAT_FILTER.equals(mode.getMode()) ? OperationMode.PREDEFINED_WORD : operationMode;
-			} else if (operationMode == OperationMode.RANDOM_WORD){
-				operationMode = BLACK_HAT_FILTER.equals(mode.getMode()) ? OperationMode.BLACK_HAT : (RANDOM_WORD_FILTER.equals(mode.getMode()) ? OperationMode.RANDOM_WORD : OperationMode.PREDEFINED_WORD);
-			} else {
-				operationMode = OperationMode.RANDOM_WEATHER_ID;
+				if (mode.getMode().equals(BLACK_HAT_FILTER)){
+					operationMode = OperationMode.RANDOM_WEATHER_ID;
+				}
+			}else {
+				if (mode.getMode().equals(BLACK_HAT_FILTER)) {
+					operationMode = OperationMode.BLACK_HAT;
+				}else if (mode.getMode().equals(RANDOM_WORD_FILTER)) {
+					operationMode = OperationMode.RANDOM_WORD;
+				}else if (mode.getMode().equals(WEATHER_STATION_FILTER)) {
+					operationMode = OperationMode.RANDOM_WEATHER_ID;
+				}else {
+					operationMode = OperationMode.PREDEFINED_WORD;
+				}
 			}
+			log.info("Change operation mode to " + operationMode.toString());
 		}
 	}
 
