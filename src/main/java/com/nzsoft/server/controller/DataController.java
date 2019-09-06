@@ -36,6 +36,13 @@ public class DataController {
 		return dataService.getData(teamId);
 	}
 
+	@RequestMapping(path="/mode", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
+	@ResponseStatus(HttpStatus.OK)
+	public String getMode() {
+		log.info("Retrieving mode");
+		return dataService.getMode().name();
+	}
+
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void changeMode(@RequestBody(required = true) ModeFilter mode) {

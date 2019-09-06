@@ -20,13 +20,6 @@ public class WordDataService implements DataService {
 	private static final String BLACK_HAT_FILTER = "black-h@t";
 	private static final String RANDOM_WORD_FILTER = "random-word";
 	private static final String WEATHER_STATION_FILTER = "weather-station";
-
-	private static enum OperationMode {
-		RANDOM_WORD,
-		PREDEFINED_WORD,
-		BLACK_HAT,
-		RANDOM_WEATHER_ID
-	}
 	
 	private OperationMode operationMode;
 	
@@ -78,6 +71,10 @@ public class WordDataService implements DataService {
 			}
 			log.info("Change operation mode to " + operationMode.toString());
 		}
+	}
+
+	public OperationMode getMode() {
+		return this.operationMode;
 	}
 
 	private String predefinedWord() {
