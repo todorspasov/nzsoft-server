@@ -36,7 +36,7 @@ public class DataController {
 		return dataService.getData(teamId);
 	}
 
-	@RequestMapping(path="/mode", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN)
+	@RequestMapping(path="/mode", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	public String getMode() {
 		log.info("Retrieving mode");

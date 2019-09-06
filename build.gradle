@@ -29,6 +29,9 @@ ext {
     dockerrepo = 'nzsoft-server'
 }
 
+sourceCompatibility = 11
+targetCompatibility = 11
+
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
